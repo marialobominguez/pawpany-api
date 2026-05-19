@@ -3,7 +3,14 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from models import Usuario, Mascota, PerfilCuidador, Contrato, Mensaje, Resena
-from schemas import UsuarioCreate, UsuarioOut
+from schemas import (
+    UsuarioCreate, UsuarioOut, 
+    MascotaCreate, MascotaOut,
+    PerfilCuidadorCreate, PerfilCuidadorOut,
+    ContratoCreate, ContratoOut,
+    MensajeCreate, MensajeOut,
+    ResenaCreate, ResenaOut
+)
 
 # creo la aplicación
 app = FastAPI(
@@ -80,3 +87,44 @@ def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     
     return nuevo_usuario
 
+# otra forma de hacerlo: usando desempaquetado de diccionarios (**)
+# los ** extraen automáticamente todas las variables del Schema y las encajan en el modelo
+@app.post("/mascotas", response_model=MascotaOut)
+def crear_mascota(mascota: MascotaCreate, db: Session = Depends(get_db)):
+    nueva_mascota = Mascota(**mascota.model_dump())
+    db.add(nueva_mascota)
+    db.commit()
+    db.refresh(nueva_mascota)
+    return nueva_mascota
+
+@app.post("/perfiles-cuidadores", response_model=PerfilCuidadorOut)
+def crear_perfil_cuidador(perfil: PerfilCuidadorCreate, db: Session = Depends(get_db)):
+    nuevo_perfil = PerfilCuidador(**perfil.model_dump())
+    db.add(nuevo_perfil)
+    db.commit()
+    db.refresh(nuevo_perfil)
+    return nuevo_perfil
+
+@app.post("/contratos", response_model=ContratoOut)
+def crear_contrato(contrato: ContratoCreate, db: Session = Depends(get_db)):
+    nuevo_contrato = Contrato(**contrato.model_dump())
+    db.add(nuevo_contrato)
+    db.commit()
+    db.refresh(nuevo_contrato)
+    return nuevo_contrato
+
+@app.post("/mensajes", response_model=MensajeOut)
+def crear_mensaje(mensaje: MensajeCreate, db: Session = Depends(get_db)):
+    nuevo_mensaje = Mensaje(**mensaje.model_dump())
+    db.add(nuevo_mensaje)
+    db.commit()
+    db.refresh(nuevo_mensaje)
+    return nuevo_mensaje
+
+@app.post("/resenas", response_model=ResenaOut)
+def crear_resena(resena: ResenaCreate, db: Session = Depends(get_db)):
+    nueva_resena = Resena(**resena.model_dump())
+    db.add(nueva_resena)
+    db.commit()
+    db.refresh(nueva_resena)
+    return nueva_resena
