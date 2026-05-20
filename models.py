@@ -31,14 +31,14 @@ class Usuario(Base): # pongo Base para que SQLAlchemy sepa que es una tabla que 
     fecha_registro = Column(DateTime, default=func.now())
 
     # relaciones de los usuarios generales con los tipos de usuario
-    perfil_cuidador = relationship("PerfilCuidador", back_populates="usuario", uselist=False)
-    mascota = relationship("Mascota", back_populates="usuario", uselist=False) 
+    perfil_cuidador = relationship("PerfilCuidador", back_populates="usuario", uselist=False, cascade="all, delete-orphan")
+    mascota = relationship("Mascota", back_populates="usuario", uselist=False, cascade="all, delete-orphan")
     
     # relaciones con mensajes y contrato
-    contratos_como_dueno = relationship("Contrato", foreign_keys="[Contrato.id_dueno]", back_populates="dueno")
-    contratos_como_cuidador = relationship("Contrato", foreign_keys="[Contrato.id_cuidador]", back_populates="cuidador")
-    mensajes_enviados = relationship("Mensaje", foreign_keys="[Mensaje.id_remitente]", back_populates="remitente")
-    mensajes_recibidos = relationship("Mensaje", foreign_keys="[Mensaje.id_destinatario]", back_populates="destinatario")
+    contratos_como_dueno = relationship("Contrato", foreign_keys="[Contrato.id_dueno]", back_populates="dueno", cascade="all, delete-orphan")
+    contratos_como_cuidador = relationship("Contrato", foreign_keys="[Contrato.id_cuidador]", back_populates="cuidador", cascade="all, delete-orphan")
+    mensajes_enviados = relationship("Mensaje", foreign_keys="[Mensaje.id_remitente]", back_populates="remitente", cascade="all, delete-orphan")
+    mensajes_recibidos = relationship("Mensaje", foreign_keys="[Mensaje.id_destinatario]", back_populates="destinatario", cascade="all, delete-orphan")
 
 # tabla cuidadores 
 class PerfilCuidador(Base):
@@ -85,7 +85,7 @@ class Contrato(Base):
 
     dueno = relationship("Usuario", foreign_keys=[id_dueno], back_populates="contratos_como_dueno")
     cuidador = relationship("Usuario", foreign_keys=[id_cuidador], back_populates="contratos_como_cuidador")
-    resena = relationship("Resena", back_populates="contrato", uselist=False)
+    resena = relationship("Resena", back_populates="contrato", cascade="all, delete-orphan")
 
 # tabla mensajes
 class Mensaje(Base):

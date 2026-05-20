@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -128,3 +128,78 @@ def crear_resena(resena: ResenaCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(nueva_resena)
     return nueva_resena
+
+# FIN CRUD - INSERT
+
+# CRUD - DELETE
+
+# usuario general
+@app.delete("/usuarios/{id}")
+def borrar_usuario(id: int, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.id == id).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    
+    db.delete(usuario)
+    db.commit()
+    return {"mensaje": "Usuario eliminado correctamente"}
+
+# mascotas
+@app.delete("/mascotas/{id}")
+def borrar_mascota(id: int, db: Session = Depends(get_db)):
+    mascota = db.query(Mascota).filter(Mascota.id == id).first()
+    if not mascota:
+        raise HTTPException(status_code=404, detail="Mascota no encontrada")
+    
+    db.delete(mascota)
+    db.commit()
+    return {"mensaje": "Mascota eliminada correctamente"}
+
+
+# cuidadores
+@app.delete("/perfiles-cuidadores/{id}")
+def borrar_perfil_cuidador(id: int, db: Session = Depends(get_db)):
+    perfil = db.query(PerfilCuidador).filter(PerfilCuidador.id == id).first()
+    if not perfil:
+        raise HTTPException(status_code=404, detail="Cuidadpr no encontrado")
+    
+    db.delete(perfil)
+    db.commit()
+    return {"mensaje": "Cuidador eliminado correctamente"}
+
+
+# contratos
+@app.delete("/contratos/{id}")
+def borrar_contrato(id: int, db: Session = Depends(get_db)):
+    contrato = db.query(Contrato).filter(Contrato.id == id).first()
+    if not contrato:
+        raise HTTPException(status_code=404, detail="Contrato no encontrado")
+    
+    db.delete(contrato)
+    db.commit()
+    return {"mensaje": "Contrato eliminado correctamente"}
+
+# mensajes
+@app.delete("/mensajes/{id}")
+def borrar_mensaje(id: int, db: Session = Depends(get_db)):
+    mensaje = db.query(Mensaje).filter(Mensaje.id == id).first()
+    if not mensaje:
+        raise HTTPException(status_code=404, detail="Mensaje no encontrado")
+    
+    db.delete(mensaje)
+    db.commit()
+    return {"mensaje": "Mensaje eliminado correctamente"}
+
+
+# reseñas
+@app.delete("/resenas/{id}")
+def borrar_resena(id: int, db: Session = Depends(get_db)):
+    resena = db.query(Resena).filter(Resena.id == id).first()
+    if not resena:
+        raise HTTPException(status_code=404, detail="Reseña no encontrada")
+    
+    db.delete(resena)
+    db.commit()
+    return {"mensaje": "Reseña eliminada correctamente"}
+
+# FIN CRUD - DELETE
