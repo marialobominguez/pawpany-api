@@ -3,6 +3,8 @@ from typing import List, Optional
 from models import EstadoContrato, RolUsuario
 from datetime import datetime, date
 
+# ESQUEMAS POST
+
 # datos del usuario general
 class UsuarioCreate(BaseModel):
     username: str
@@ -117,3 +119,45 @@ class ResenaOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# ESQUEMAS UPDATE
+
+# usuario general - no quiero que se modifiquen ni el usuario ni el email
+class UsuarioUpdate(BaseModel):
+    nombre: Optional[str] = None
+    apellido1: Optional[str] = None
+    apellido2: Optional[str] = None
+    ubicacion: Optional[str] = None
+
+
+# mascotas
+class MascotaUpdate(BaseModel):
+    nombre: Optional[str] = None
+    especie: Optional[str] = None
+    raza: Optional[str] = None
+    requisitos_tags: Optional[List] = None
+    personalidad_libre: Optional[str] = None
+    foto_url: Optional[str] = None
+
+
+# cuidadores
+class PerfilCuidadorUpdate(BaseModel):
+    estudios: Optional[str] = None
+    tarifa: Optional[float] = None
+    cualidades_tags: Optional[List] = None
+    sobre_mi: Optional[str] = None
+    foto_url: Optional[str] = None
+
+
+# contrato
+class ContratoUpdate(BaseModel):
+    estado: Optional[EstadoContrato] = None
+    precio_total: Optional[float] = None
+    detalles_servicio: Optional[str] = None
+
+
+# reseñas
+class ResenaUpdate(BaseModel):
+    calificacion: Optional[int] = None
+    comentario: Optional[str] = None

@@ -4,12 +4,12 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Usuario, Mascota, PerfilCuidador, Contrato, Mensaje, Resena
 from schemas import (
-    UsuarioCreate, UsuarioOut, 
+    ContratoUpdate, MascotaUpdate, PerfilCuidadorUpdate, ResenaUpdate, UsuarioCreate, UsuarioOut, 
     MascotaCreate, MascotaOut,
     PerfilCuidadorCreate, PerfilCuidadorOut,
     ContratoCreate, ContratoOut,
     MensajeCreate, MensajeOut,
-    ResenaCreate, ResenaOut
+    ResenaCreate, ResenaOut, UsuarioUpdate
 )
 
 # creo la aplicación
@@ -203,3 +203,77 @@ def borrar_resena(id: int, db: Session = Depends(get_db)):
     return {"mensaje": "Reseña eliminada correctamente"}
 
 # FIN CRUD - DELETE
+
+# CRUD - UPDATE
+
+# usuario general
+@app.put("/usuarios/{id}", response_model=UsuarioOut)
+def actualizar_usuario(id: int, datos_nuevos: UsuarioUpdate, db: Session = Depends(get_db)):
+    # busca si existe
+    usuario_db = db.query(Usuario).filter(Usuario.id == id).first()
+    if not usuario_db:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado") # excepción si no existe
+    
+    # solo actualizo los datos que me envía el usuario
+    datos_diccionario = datos_nuevos.model_dump(exclude_unset=True) # exclude_unset=True --> ignora los datos sin rellenar, solo se centra en los enviaddos por el usuario
+    for clave, valor in datos_diccionario.items():
+        setattr(usuario_db, clave, valor)
+        
+    db.commit()
+    db.refresh(usuario_db)
+    return usuario_db
+
+@app.put("/mascotas/{id}", response_model=MascotaOut)
+def actualizar_mascota(id: int, datos_nuevos: MascotaUpdate, db: Session = Depends(get_db)):
+    mascota_db = db.query(Mascota).filter(Mascota.id == id).first()
+    if not mascota_db:
+        raise HTTPException(status_code=404, detail="Mascota no encontrada")
+    
+    for clave, valor in datos_nuevos.model_dump(exclude_unset=True).items():
+        setattr(mascota_db, clave, valor)
+        
+    db.commit()
+    db.refresh(mascota_db)
+    return mascota_db
+
+@app.put("/perfiles-cuidadores/{id}", response_model=PerfilCuidadorOut)
+def actualizar_perfil_cuidador(id: int, datos_nuevos: PerfilCuidadorUpdate, db: Session = Depends(get_db)):
+    perfil_db = db.query(PerfilCuidador).filter(PerfilCuidador.id == id).first()
+    if not perfil_db:
+        raise HTTPException(status_code=404, detail="Perfil no encontrado")
+    
+    for clave, valor in datos_nuevos.model_dump(exclude_unset=True).items():
+        setattr(perfil_db, clave, valor)
+        
+    db.commit()
+    db.refresh(perfil_db)
+    return perfil_db
+
+@app.put("/contratos/{id}", response_model=ContratoOut)
+def actualizar_contrato(id: int, datos_nuevos: ContratoUpdate, db: Session = Depends(get_db)):
+    contrato_db = db.query(Contrato).filter(Contrato.id == id).first()
+    if not contrato_db:
+        raise HTTPException(status_code=404, detail="Contrato no encontrado")
+    
+    for clave, valor in datos_nuevos.model_dump(exclude_unset=True).items():
+        setattr(contrato_db, clave, valor)
+        
+    db.commit()
+    db.refresh(contrato_db)
+    return contrato_db
+
+@app.put("/resenas/{id}", response_model=ResenaOut)
+def actualizar_resena(id: int, datos_nuevos: ResenaUpdate, db: Session = Depends(get_db)):
+    resena_db = db.query(Resena).filter(Resena.id == id).first()
+    if not resena_db:
+        raise HTTPException(status_code=404, detail="Reseña no encontrada")
+    
+    for clave, valor in datos_nuevos.model_dump(exclude_unset=True).items():
+        setattr(resena_db, clave, valor)
+        
+    db.commit()
+    db.refresh(resena_db)
+    return resena_db
+
+
+# FIN CRUD - UPDATE
