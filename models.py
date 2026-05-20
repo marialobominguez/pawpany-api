@@ -95,7 +95,7 @@ class Mensaje(Base):
     id_remitente = Column(Integer, ForeignKey("Usuarios.id", ondelete="CASCADE"), nullable=False)
     id_destinatario = Column(Integer, ForeignKey("Usuarios.id", ondelete="CASCADE"), nullable=False)
     contenido = Column(Text, nullable=False)
-    fecha_envio = Column(DateTime)
+    fecha_envio = Column(DateTime, default=func.now())
     leido = Column(Boolean, default=False) # El tinyint(1) de MySQL es un Boolean
 
     remitente = relationship("Usuario", foreign_keys=[id_remitente], back_populates="mensajes_enviados")
@@ -106,9 +106,11 @@ class Resena(Base):
     __tablename__ = "Resenas"
 
     id = Column(Integer, primary_key=True, index=True)
-    id_contrato = Column(Integer, ForeignKey("Contratos.id", ondelete="CASCADE"), unique=True, nullable=False)
+    id_contrato = Column(Integer, ForeignKey("Contratos.id", ondelete="CASCADE"), nullable=False)
+    id_autor = Column(Integer, ForeignKey("Usuarios.id", ondelete="CASCADE"), nullable=False)
     calificacion = Column(Integer)
     comentario = Column(Text)
-    fecha_creacion = Column(DateTime)
+    fecha_creacion = Column(DateTime, default=func.now())
 
     contrato = relationship("Contrato", back_populates="resena")
+    autor = relationship("Usuario", foreign_keys=[id_autor]) # no es necesario, pero para que SQLAlchemy sepa navegar desde la reseña hasta el usuario 

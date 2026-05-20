@@ -104,13 +104,16 @@ class MensajeOut(BaseModel):
 # datos de las reseñas
 class ResenaCreate(BaseModel):
     id_contrato: int  
+    id_autor: int
     calificacion: int
     comentario: Optional[str] = None
 
 class ResenaOut(BaseModel):
     id: int
     id_contrato: int
+    id_autor: int
     calificacion: int
+    fecha_creacion: datetime
 
     class Config:
         from_attributes = True
